@@ -7,11 +7,9 @@ import { DataProvider, useDataContext } from "./DataContext.tsx";
 const App: React.FC = () => {
   return (
     <Router basename="/ViewEdit">
-    <DataProvider>
-      <Router>
+      <DataProvider>
         <AppWithRoutes />
-      </Router>
-    </DataProvider>
+      </DataProvider>
     </Router>
   );
 };
