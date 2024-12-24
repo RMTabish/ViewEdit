@@ -9,6 +9,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 
+import ReactMarkdown from "react-markdown";
 interface MainWindowProps {
   data: { title: string; bodyText: string }[];
 }
@@ -97,10 +98,7 @@ const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
               />
             </>
           ) : (
-            <>
-              <Typography variant="h6">{selectedPage.title}</Typography>
-              <Typography>{selectedPage.bodyText}</Typography>
-            </>
+<ReactMarkdown>{selectedPage.bodyText}</ReactMarkdown>
           )}
           <Button
             variant="contained"
