@@ -82,7 +82,7 @@ src/
 -----
 ## <a name="_s9g23k9np5ds"></a>**JSON Schema Example**
 The application expects a JSON file with the following structure:
-
+```
 {
 
 `  `"Pages": [
