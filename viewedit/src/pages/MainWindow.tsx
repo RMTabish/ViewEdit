@@ -4,7 +4,6 @@ import { Grid, Box, Button, Typography, List, ListItemButton, TextField } from "
 import { useDataContext } from "../DataContext.tsx";
 import ReactMarkdown from "react-markdown";
 
-
 const MainWindow: React.FC = () => {
   const { data } = useDataContext();
   const navigate = useNavigate();
@@ -47,6 +46,18 @@ const MainWindow: React.FC = () => {
       selectedPage.bodyText = editedBodyText; // Save changes
     }
     setIsEditing(!isEditing); // Toggle edit mode
+  };
+
+  const handleExport = () => {
+    const jsonBlob = new Blob([JSON.stringify({ Pages: data }, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(jsonBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "exported_data.json";
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -112,14 +123,24 @@ const MainWindow: React.FC = () => {
           <Typography variant="h4" sx={{ fontWeight: "bold" }}>
             {selectedPage.title}
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleEditToggle}
-            sx={{ textTransform: "none" }}
-          >
-            {isEditing ? "Save" : "Edit"}
-          </Button>
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditToggle}
+              sx={{ textTransform: "none", marginRight: 1 }}
+            >
+              {isEditing ? "Save" : "Edit"}
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleExport}
+              sx={{ textTransform: "none" }}
+            >
+              Export
+            </Button>
+          </Box>
         </Box>
 
         <Box
