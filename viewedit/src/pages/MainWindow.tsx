@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Grid, Box, Button, Typography, List, ListItemButton, TextField } from "@mui/material";
 import { useDataContext } from "../DataContext.tsx";
+import ReactMarkdown from "react-markdown";
+
 
 const MainWindow: React.FC = () => {
   const { data } = useDataContext();
@@ -141,9 +143,7 @@ const MainWindow: React.FC = () => {
               sx={{ border: "1px solid #ddd", borderRadius: 1, padding: 1 }}
             />
           ) : (
-            <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-              {selectedPage.bodyText}
-            </Typography>
+            <ReactMarkdown>{selectedPage.bodyText}</ReactMarkdown>
           )}
         </Box>
       </Grid>
