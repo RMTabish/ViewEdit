@@ -81,27 +81,33 @@ src/
 - **TypeScript**: Superset of JavaScript for type safety and better developer experience.
 -----
 ## <a name="_s9g23k9np5ds"></a>**JSON Schema Example**
+
+Example link:
+```
+https://gist.githubusercontent.com/thehappybug/65a466dcdb0908767057b80f0cb7ea5d/raw/6f10747c5feb7ce91b83392f2cee23ae06b20fe6/doc.json
+
+```
 The application expects a JSON file with the following structure:
 ```
 {
 
-`  `"Pages": [
+  "Pages": [
 
-`    `{
+    {
 
-`      `"title": "Page 1",
+     "title": "Page 1",
 
-`      `"bodyText": "This is the content of Page 1."
+      "bodyText": "This is the content of Page 1."
 
-`    `},
+    },
 
-`    `{
+    {
 
-`      `"title": "Page 2",
+      "title": "Page 2",
 
-`      `"bodyText": "This is the content of Page 2."
+      "bodyText": "This is the content of Page 2."
 
-`    `}
+    }
 
 `  `]
 
