@@ -1,6 +1,10 @@
 # <a name="_efr7fk7izzwd"></a>**Documentation Viewer & Editor**
 This project is a web application that allows users to load JSON documentation, navigate between pages, edit content, and export the updated documentation. It is built with **React** and **Material-UI**, ensuring a responsive and intuitive user interface.
-brainStorming.png is some inital planning for the project.
+
+**Inital Brainstorming**
+<img width="669" alt="brainstroming" src="https://github.com/user-attachments/assets/764b7857-b878-482b-ba4a-1fca2a99faa8" />
+
+
 
 -----
 ## <a name="_q8zyzshsimmg"></a>**Features**
