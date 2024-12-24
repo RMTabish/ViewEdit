@@ -1,15 +1,7 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Grid,
-  Typography,
-  TextField,
-  List,
-  ListItemButton,
-} from "@mui/material";
-
 import ReactMarkdown from "react-markdown";
+import { Grid, Box, Button, TextField, Typography, List, ListItemButton } from "@mui/material";
+
 interface MainWindowProps {
   data: { title: string; bodyText: string }[];
 }
@@ -17,28 +9,32 @@ interface MainWindowProps {
 const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
   const [selectedPage, setSelectedPage] = useState(data[0]);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState(selectedPage);
+  const [editedBodyText, setEditedBodyText] = useState(selectedPage.bodyText);
 
   const handleEditToggle = () => {
     if (isEditing) {
-      selectedPage.title = editedData.title;
-      selectedPage.bodyText = editedData.bodyText;
+      selectedPage.bodyText = editedBodyText;
     }
     setIsEditing(!isEditing);
   };
 
   return (
-    <Grid container style={{ height: "100vh" }}>
+    <Grid container sx={{ height: "100vh", width: "100vw" }}>
       {/* Sidebar */}
       <Grid
         item
         xs={3}
-        style={{
+        sx={{
+          backgroundColor: "grey.100",
           height: "100%",
-          borderRight: "1px solid grey",
           overflowY: "auto",
+          borderRight: "1px solid #ddd",
+          padding: 2,
         }}
       >
+        <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: 2 }}>
+          Menu
+        </Typography>
         <List>
           {data.map((page, index) => (
             <ListItemButton
@@ -46,8 +42,16 @@ const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
               selected={page.title === selectedPage.title}
               onClick={() => {
                 setSelectedPage(page);
-                setEditedData(page);
+                setEditedBodyText(page.bodyText);
                 setIsEditing(false);
+              }}
+              sx={{
+                borderRadius: 1,
+                marginBottom: 1,
+                "&.Mui-selected": {
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                },
               }}
             >
               {page.title}
@@ -60,53 +64,91 @@ const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
       <Grid
         item
         xs={9}
-        style={{ height: "100%", overflowY: "auto", padding: "16px" }}
+        sx={{
+          height: "100%",
+          padding: 3,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
       >
+        {/* Header */}
         <Box
-          p={2}
-          border={1}
-          borderColor="grey.300"
-          borderRadius={2}
-          width="100%"
-          height="100%"
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-between"
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 2,
+            borderBottom: "1px solid #ddd",
+            paddingBottom: 1,
+          }}
         >
-          {isEditing ? (
-            <>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Title"
-                value={editedData.title}
-                onChange={(e) =>
-                  setEditedData({ ...editedData, title: e.target.value })
-                }
-                style={{ marginBottom: "16px" }}
-              />
-              <TextField
-                fullWidth
-                multiline
-                rows={10}
-                variant="outlined"
-                label="Body"
-                value={editedData.bodyText}
-                onChange={(e) =>
-                  setEditedData({ ...editedData, bodyText: e.target.value })
-                }
-              />
-            </>
-          ) : (
-<ReactMarkdown>{selectedPage.bodyText}</ReactMarkdown>
-          )}
+          <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+            {selectedPage.title}
+          </Typography>
           <Button
             variant="contained"
             color="primary"
             onClick={handleEditToggle}
-            style={{ marginTop: "16px" }}
+            sx={{ textTransform: "none" }}
           >
             {isEditing ? "Save" : "Edit"}
+          </Button>
+        </Box>
+
+        {/* Content */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflowY: "auto",
+            backgroundColor: "white",
+            borderRadius: 1,
+            padding: 2,
+            boxShadow: 1,
+          }}
+        >
+          {isEditing ? (
+            <TextField
+              fullWidth
+              multiline
+              rows={15}
+              variant="outlined"
+              value={editedBodyText}
+              onChange={(e) => setEditedBodyText(e.target.value)}
+              sx={{ border: "1px solid #ddd", borderRadius: 1, padding: 1 }}
+            />
+          ) : (
+            <ReactMarkdown>{selectedPage.bodyText}</ReactMarkdown>
+          )}
+        </Box>
+
+        {/* Footer */}
+        <Box
+          sx={{
+            marginTop: 2,
+            borderTop: "1px solid #ddd",
+            paddingTop: 1,
+            textAlign: "right",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ textTransform: "none" }}
+            onClick={() => {
+              const jsonBlob = new Blob(
+                [JSON.stringify({ Pages: data }, null, 2)],
+                { type: "application/json" }
+              );
+              const url = URL.createObjectURL(jsonBlob);
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = "exported_data.json";
+              link.click();
+              URL.revokeObjectURL(url);
+            }}
+          >
+            Export
           </Button>
         </Box>
       </Grid>
