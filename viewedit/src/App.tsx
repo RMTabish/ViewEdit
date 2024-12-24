@@ -1,51 +1,66 @@
-import './App.css';
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Box, TextField, Button, Typography } from "@mui/material";
+import MainWindow from "./pages/MainWindow.tsx";
 
 const App: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [url, setUrl] = useState("");
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const handleLoadData = async () => {
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch the URL");
       const jsonData = await response.json();
-      setData(jsonData);
-      alert("Data loaded successfully!");
+      setData(jsonData.Pages); // Pass the `Pages` array
+      setIsDataLoaded(true);
     } catch (error) {
       alert("Failed to load data. Please check the URL.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <div className="bg-white shadow-md rounded p-6 w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4 text-gray-700">Load JSON Data</h1>
-        <div className="flex space-x-2 mb-4">
-          <input
-            type="text"
-            placeholder="Enter JSON URL"
+    <Box
+      style={{
+        height: "100vh",
+        width: "100vw",
+      }}
+    >
+      {!isDataLoaded ? (
+        <Box
+          sx={{
+            width: "400px", // Adjust the width as needed
+            margin: "auto",
+            padding: 4,
+            boxShadow: 2,
+            borderRadius: 2,
+            backgroundColor: "white",
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Enter JSON URL
+          </Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Enter URL"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="flex-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            style={{ marginBottom: "16px" }}
           />
-          <button
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
             onClick={handleLoadData}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            Load
-          </button>
-        </div>
-        {data ? (
-          <div className="bg-green-100 p-4 rounded text-green-700">
-            <h2 className="font-bold text-lg">Data Loaded!</h2>
-            <p>{JSON.stringify(data, null, 2)}</p>
-          </div>
-        ) : (
-          <p className="text-gray-600">No data loaded. Enter a URL above.</p>
-        )}
-      </div>
-    </div>
+            Load Data
+          </Button>
+        </Box>
+      ) : (
+        <MainWindow data={data} />
+      )}
+    </Box>
   );
 };
 
