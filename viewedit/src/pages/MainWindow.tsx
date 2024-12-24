@@ -1,21 +1,50 @@
-import React, { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { Grid, Box, Button, TextField, Typography, List, ListItemButton } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Grid, Box, Button, Typography, List, ListItemButton, TextField } from "@mui/material";
+import { useDataContext } from "../DataContext.tsx";
 
-interface MainWindowProps {
-  data: { title: string; bodyText: string }[];
-}
+const MainWindow: React.FC = () => {
+  const { data } = useDataContext();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
   const [selectedPage, setSelectedPage] = useState(data[0]);
   const [isEditing, setIsEditing] = useState(false);
   const [editedBodyText, setEditedBodyText] = useState(selectedPage.bodyText);
 
+  // Sync selected page with the URL
+  useEffect(() => {
+    if (data) {
+      const pageSlug = location.pathname.substring(1); // Extract slug from URL
+      const matchingPage = data.find(
+        (page: any) =>
+          page.title.toLowerCase().replace(/\s+/g, "-") === pageSlug
+      );
+
+      if (matchingPage) {
+        setSelectedPage(matchingPage);
+        setEditedBodyText(matchingPage.bodyText);
+      } else {
+        // Redirect to the first page if URL is invalid
+        const firstPageSlug = data[0].title.toLowerCase().replace(/\s+/g, "-");
+        navigate(`/${firstPageSlug}`, { replace: true });
+      }
+    }
+  }, [location.pathname, data, navigate]);
+
+  const handlePageSelect = (page: { title: string; bodyText: string }) => {
+    setSelectedPage(page);
+    setEditedBodyText(page.bodyText);
+    setIsEditing(false);
+    const pageSlug = `/${page.title.toLowerCase().replace(/\s+/g, "-")}`;
+    navigate(pageSlug); // Update the URL
+  };
+
   const handleEditToggle = () => {
     if (isEditing) {
-      selectedPage.bodyText = editedBodyText;
+      selectedPage.bodyText = editedBodyText; // Save changes
     }
-    setIsEditing(!isEditing);
+    setIsEditing(!isEditing); // Toggle edit mode
   };
 
   return (
@@ -40,11 +69,7 @@ const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
             <ListItemButton
               key={index}
               selected={page.title === selectedPage.title}
-              onClick={() => {
-                setSelectedPage(page);
-                setEditedBodyText(page.bodyText);
-                setIsEditing(false);
-              }}
+              onClick={() => handlePageSelect(page)}
               sx={{
                 borderRadius: 1,
                 marginBottom: 1,
@@ -72,7 +97,6 @@ const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
           overflow: "hidden",
         }}
       >
-        {/* Header */}
         <Box
           sx={{
             display: "flex",
@@ -96,7 +120,6 @@ const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
           </Button>
         </Box>
 
-        {/* Content */}
         <Box
           sx={{
             flexGrow: 1,
@@ -118,38 +141,10 @@ const MainWindow: React.FC<MainWindowProps> = ({ data }) => {
               sx={{ border: "1px solid #ddd", borderRadius: 1, padding: 1 }}
             />
           ) : (
-            <ReactMarkdown>{selectedPage.bodyText}</ReactMarkdown>
+            <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+              {selectedPage.bodyText}
+            </Typography>
           )}
-        </Box>
-
-        {/* Footer */}
-        <Box
-          sx={{
-            marginTop: 2,
-            borderTop: "1px solid #ddd",
-            paddingTop: 1,
-            textAlign: "right",
-          }}
-        >
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ textTransform: "none" }}
-            onClick={() => {
-              const jsonBlob = new Blob(
-                [JSON.stringify({ Pages: data }, null, 2)],
-                { type: "application/json" }
-              );
-              const url = URL.createObjectURL(jsonBlob);
-              const link = document.createElement("a");
-              link.href = url;
-              link.download = "exported_data.json";
-              link.click();
-              URL.revokeObjectURL(url);
-            }}
-          >
-            Export
-          </Button>
         </Box>
       </Grid>
     </Grid>

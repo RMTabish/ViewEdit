@@ -1,35 +1,45 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import MainWindow from "./pages/MainWindow.tsx";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { DataProvider, useDataContext } from "./DataContext.tsx";
 
 const App: React.FC = () => {
-  const [data, setData] = useState<any>(null);
+  return (
+    <DataProvider>
+      <Router>
+        <AppWithRoutes />
+      </Router>
+    </DataProvider>
+  );
+};
+
+// Main app logic with routing
+const AppWithRoutes: React.FC = () => {
+  const { data, setData } = useDataContext();
   const [url, setUrl] = useState("");
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const handleLoadData = async () => {
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Failed to fetch the URL");
       const jsonData = await response.json();
-      setData(jsonData.Pages); // Pass the `Pages` array
-      setIsDataLoaded(true);
+      setData(jsonData.Pages); // Save loaded data to context
+      const firstPageSlug = jsonData.Pages[0].title.toLowerCase().replace(/\s+/g, "-");
+      navigate(`/${firstPageSlug}`); // Redirect to the first page
     } catch (error) {
       alert("Failed to load data. Please check the URL.");
     }
   };
 
   return (
-    <Box
-      style={{
-        height: "100vh",
-        width: "100vw",
-      }}
-    >
-      {!isDataLoaded ? (
+    <Box style={{ height: "100vh", width: "100vw" }}>
+      {!data ? (
+        // Show the data input form if data is not loaded
         <Box
           sx={{
-            width: "400px", // Adjust the width as needed
+            width: "400px",
             margin: "auto",
             padding: 4,
             boxShadow: 2,
@@ -58,7 +68,10 @@ const App: React.FC = () => {
           </Button>
         </Box>
       ) : (
-        <MainWindow data={data} />
+        // Render MainWindow when data is loaded
+        <Routes>
+          <Route path="/*" element={<MainWindow />} />
+        </Routes>
       )}
     </Box>
   );
