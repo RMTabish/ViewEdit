@@ -1,5 +1,6 @@
 # <a name="_efr7fk7izzwd"></a>**Documentation Viewer & Editor**
 This project is a web application that allows users to load JSON documentation, navigate between pages, edit content, and export the updated documentation. It is built with **React** and **Material-UI**, ensuring a responsive and intuitive user interface.
+brainStorming.png is some inital planning for the project.
 
 -----
 ## <a name="_q8zyzshsimmg"></a>**Features**
@@ -16,25 +17,26 @@ Follow these steps to run the project locally:
 - **Node.js** (v16 or later)
 - **npm** or **yarn**
 ### <a name="_1e91xhk237k0"></a>**Steps to Run**
+
 **Clone the Repository**
 
-git clone <https://github.com/RMTabish/ViewEdit>
+`git clone <https://github.com/RMTabish/ViewEdit>`
 
-cd ViewEdit
+`cd ViewEdit`
 
-cd viewedit
+`cd viewedit`
 
 **Install Dependencies**
 
-npm install
+`npm install`
 
 **Run the Application**
 
-npm start
+`npm start`
 
 Open the application in your browser:
 
-http://localhost:3000
+`http://localhost:3000`
 
 -----
 ## <a name="_uthynhim3hks"></a>**Deployment**
@@ -60,8 +62,7 @@ The project is divided into modular components for clarity and reusability:
 
 scss
 
-Copy code
-
+```
 src/
 
 `  `├── pages/
@@ -72,6 +73,7 @@ src/
 
 `  `├── index.tsx            // Application entry point
 
+```
 -----
 ## <a name="_50zxibsejwem"></a>**Built With**
 - **React**: JavaScript library for building user interfaces.
