@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 // Define the shape of the context
 interface DataContextType {
@@ -11,7 +11,17 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 // Context provider component
 export const DataProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [data, setData] = useState<any[] | null>(null);
+  const [data, setDataState] = useState<any[] | null>(() => {
+    // Load data from localStorage on initialization
+    const storedData = localStorage.getItem("appData");
+    return storedData ? JSON.parse(storedData) : null;
+  });
+
+  const setData = (newData: any[]) => {
+    setDataState(newData);
+    localStorage.setItem("appData", JSON.stringify(newData)); // Save to localStorage
+  };
+
   return (
     <DataContext.Provider value={{ data, setData }}>
       {children}

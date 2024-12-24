@@ -14,7 +14,6 @@ const App: React.FC = () => {
   );
 };
 
-// Main app logic with routing
 const AppWithRoutes: React.FC = () => {
   const { data, setData } = useDataContext();
   const [url, setUrl] = useState("");
@@ -36,7 +35,7 @@ const AppWithRoutes: React.FC = () => {
   return (
     <Box style={{ height: "100vh", width: "100vw" }}>
       {!data ? (
-        // Show the data input form if data is not loaded
+        // Show the data input form if no data is available
         <Box
           sx={{
             width: "400px",
